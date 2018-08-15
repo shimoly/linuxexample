@@ -90,10 +90,10 @@ Occasionally, two libraries will be mutually dependent. (Very poor design), this
 You could open a shared library at run time named libtest.so by calling dlopen like this:
 `dlopen (“libtest.so”, RTLD_LAZY)`    
 `
-void* handle = dlopen (“libtest.so”, RTLD_LAZY);
-void (*test)() = dlsym (handle, “my_function”);
-(*test)();
-dlclose (handle);
+void* handle = dlopen (“libtest.so”, RTLD_LAZY);  
+void (*test)() = dlsym (handle, “my_function”);  
+(*test)();  
+dlclose (handle);  
 `  
 
 
@@ -102,7 +102,7 @@ Both dlopen and dlsym return NULL if they do not succeed. In that event, you can
 ### Shared in library in C++
 If you’re writing the code in your shared library in C++, you will probably want to declare those functions and variables that you plan to access elsewhere with the extern “C” linkage specifier.   
 
-For instance, if the C++ function my_function is in a shared library and you want to access it with dlsym , you should declare it like tis:
+For instance, if the C++ function my_function is in a shared library and you want to access it with dlsym , you should declare it like tis:  
 `extern “C” void foo ();`  
 
 
