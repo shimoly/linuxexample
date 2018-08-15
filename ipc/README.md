@@ -6,7 +6,7 @@ Inter process communication.
 
 ipcs provides information about the communication facilities.  
 
-% _ipcs -m_
+`% _ipcs -m` 
 
 
 ------ Shared Memory Segments --------  
@@ -17,7 +17,7 @@ ipcs provides information about the communication facilities.
 
 
 If this memory segment was erroneously left behind by a program, you can use the ipcrm command to remove it.  
-%_ipcrm shm 1627649_
+`%ipcrm shm 1627649`
 
 
 ## Pros
@@ -26,12 +26,12 @@ If this memory segment was erroneously left behind by a program, you can use the
 * A program must establish and follow some protocol to prevent race condtion
 
 
-##Cons
+## Cons
 * Linux doesn't guarantee exclusive access even if you create a new shared segment with IPC_PRIVATE
 * all the process must use the same key
 
 
-#Process semaphore
+# Process semaphore
 
 
 
