@@ -88,7 +88,7 @@ Occasionally, two libraries will be mutually dependent. (Very poor design), this
 
 ### Open shared library at runtime  
 You could open a shared library at run time named libtest.so by calling dlopen like this:  
-`dlopen (“libtest.so”, RTLD_LAZY)` 
+`dlopen (“libtest.so”, RTLD_LAZY);`      
 `void* handle = dlopen (“libtest.so”, RTLD_LAZY);`  
 `void (*test)() = dlsym (handle, “my_function”);`  
 `(*test)();`    
