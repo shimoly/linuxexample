@@ -10,6 +10,7 @@ ipcs provides information about the communication facilities.
 
 
 ------ Shared Memory Segments --------  
+
 | key | shmid | owner | perms | bytes| nattch | status|  
 | --- | --- | --- | --- | --- | --- | --- |  
 | 0x00000000 | 1627649 | user | 640 | 25600 | 0 |  |    
