@@ -2,7 +2,7 @@ Inter process communication.
 ============================
 
 
-## Debugging  
+# Shared Memory 
 
 ipcs provides information about the communication facilities.  
 
@@ -18,4 +18,22 @@ ipcs provides information about the communication facilities.
 
 If this memory segment was erroneously left behind by a program, you can use the ipcrm command to remove it.  
 %_ipcrm shm 1627649_
+
+
+## Pros
+* Shared memory permits fast bidirectional communication among any number of process.   
+* Each user can both read and write
+* A program must establish and follow some protocol to prevent race condtion
+
+
+##Cons
+* Linux doesn't guarantee exclusive access even if you create a new shared segment with IPC_PRIVATE
+* all the process must use the same key
+
+
+#Process semaphore
+
+
+
+
 
