@@ -1,11 +1,11 @@
 
 
-#Gcc flags
+# Gcc flags
 
 
 ## Compiling
-The -c flag tells the gcc to compile the program to an object file only, with out it gcc would attempt to to link the program to make an excutable program
-<gcc -c main.c>
+The -c flag tells the gcc to compile the program to an object file only, with out it gcc would attempt to to link the program to make an excutable program  
+< gcc -c main.c >
 
 -I option is used to tell GCC where to search header file by default GCC will look in the current directory and in the directory where headers for the standard libraries are installed
 
