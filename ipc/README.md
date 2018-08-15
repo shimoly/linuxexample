@@ -55,7 +55,10 @@ The fields of struct sembuf are listed here:
   * If this would make the semaphore value negative, the call blocks until the semaphore value becomes as large as the absolute value of sem_op (because some other process increments it).  
   * If sem_op is zero, the operation blocks until the semaphore value becomes zero.
 * sem_flg is a flag value. Specify IPC_NOWAIT to prevent the operation from blocking; if the operation would have blocked, the call to semop fails instead. If you specify SEM_UNDO , Linux automatically undoes the operation on the
-semaphore when the process exits
+semaphore when the process exits  
+
+### Debug semaphres
+```%ipcrm sem 5790517 ``` removes the semaphre number described
 
 
 
