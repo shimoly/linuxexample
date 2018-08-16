@@ -202,3 +202,65 @@ fprintf (stream, “One fish, two fish.\n”);
 return pclose (stream);\\ closes stream returned by the popen,after closing popen waits for the child process to terminate return tthe stattus value.
 }
 ```
+
+## FIFOs
+
+is a pipe that has a name in the filesystem (also called named pipes)
+Any process can open or close the FIFO  
+
+`mkfifo /tmp/tempfifo ` creates FIFO  
+`ls -l /tmp/tempfifo `  
+prw-r--r-- 1 daniel daniel 0 aug 16 15:36 /tmp/tempfifo   
+
+### Testing Fifo
+
+In the first window
+``` %cat < /tmp/fifo ```
+
+In a second window, write to the FIFO by invoking this:
+``` % cat > /tmp/fifo ```
+
+Then type in some lines of text. Each time you press Enter, the line of text is sent through the FIFO and appears in the first window  
+
+``` rm /tmp/tempfifo ``` removes the fifo
+### Creating and accessing FIFO
+
+#### Creating fifo
+```
+#include <sys/types.h>
+#include <sys/stat.h>
+mkfifo
+  (
+	the path where to create,
+	the pipes owner group  world permission
+		
+  )
+```
+//if fifo can't be created mkfifo returns -1  
+
+#### Accessing fifo
+
+accessed as ordinary file
+* Low level I/O ( `open` , `write` , `read` , `close` , and so on)
+* C library I/O functions ( `fopen` , `fprintf` , `fscanf` , `fclose` , and so on)
+
+Writing to FIFO
+```
+int fd = open (fifo_path, O_WRONLY);
+write (fd, data, data_length);
+close (fd);
+```
+Reading to FIFO
+```
+FILE* fifo = fopen (fifo_path, “r”);
+fscanf (fifo, “%s”, buffer);
+fclose (fifo);
+```
+
+A FIFO can have multiple readers or multiple writers. Bytes from each writer are written atomically up to a maximum size of PIPE_BUF (4KB on Linux). Chunks from simultaneous writers can be interleaved. Similar rules apply to simultaneous reads  
+
+
+
+
+
+
