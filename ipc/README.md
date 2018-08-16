@@ -135,3 +135,70 @@ Alternatively, you can use fcntl to place a read or write lock on the file.
 * replacement of ```read ``` and ```write```, map the file and scan the memory (may run faster)
 * BUild data structure in memory mapped file
 * to map special "/dev/zero" file into memory, if programs needs chunk of zero
+
+
+## Pipes
+
+- allows unidirectioanl communication
+- serial device, data is always read from the pipe in the same order it was written.
+ 
+
+``` % ls |  less ``` creates a pipe connecting the standard output of the ls process with the input of the less command.  
+writer waits until space to write is available and reader blocks until data to read is availble, this sync the two process.
+
+### Creating pipes
+
+To create a pipe supply an integer of size 2.  
+The call to pipe stores the reading file descriptor in arra postion 0 and the writing in position 1.
+
+```
+int pipe_fds[2];
+int read_fd, write_fd;
+
+pipe(pipe_fds);
+read_fd = pipe_fds[0];
+write_fd = pipe_fds[1];
+``` 
+Data written to the file descriptor ```read_fd``` can be read back from ```write_fd```  
+
+A call to pipe creates a file descriptor that is valid only to the within that process and child process.  
+when a process calls ```fork``` file process are copied to the new process.
+
+Using ``` dup2 ``` it is possiable to equate one file descriptor to the another.
+
+```
+dup2(fd, STDIN_FILENO)
+
+```
+``` STDIN_FILENO ``` represents the file descriptor for the standard input that has a value 0
+The call closes standard inputs and then reopens it as a deplicatie of fd so that the two mau be used intechangably.
+
+
+The common use of pipes is to send or receive data from a program being run in a subprocess.  
+
+
+### popen and pclose
+
+
+The ```popen``` and ```pclose``` functions ease this paradigm by eliminating the need to invoke `pipe`, `fork` , `dup2`, `exec`, and `fdopen`   
+
+
+
+```
+
+#include <stdio.h>
+#include <unistd.h>
+int main ()
+{
+FILE* stream = popen (“sort”, “w”); \\creates a child process executing the sort command, replacing calls to pipe fork dup2 and execlp
+the second argument "w" indicates this process wants to write to the child process.  
+return from popen is one end of the pipe.
+The other end is connected to the child process standard input.
+fprintf (stream, “This is a test.\n”);
+fprintf (stream, “Hello, world.\n”);
+fprintf (stream, “My dog has fleas.\n”);
+fprintf (stream, “This program is great.\n”);
+fprintf (stream, “One fish, two fish.\n”);
+return pclose (stream);\\ closes stream returned by the popen,after closing popen waits for the child process to terminate return tthe stattus value.
+}
+```
