@@ -43,8 +43,14 @@ The last process to use a semaphore must explicitly remove it.
 
 ## Wait and Post Operation
 
-
-`semop(semaphore_set_identifier, an array off struct sembuf which specify the operation, lenght of the array)` suppports both wait and post operation  
+```semop ``` supports both wait and post operation
+```
+semop
+   (
+    semaphore_set_identifier,
+    an array off struct sembuf which specify the operation,
+    lenght of the array)
+``` 
 
 
 The fields of struct sembuf are listed here:
