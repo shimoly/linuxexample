@@ -126,4 +126,12 @@ For example, to flush a shared file mapped at address mem_addr of length mem_len
 
 As with shared memory segments, users of memory-mapped regions must establish and follow a protocol to avoid race conditions.  
 For example, a semaphore can be used to prevent more than one process from accessing the mapped memory at one time.   
-Alternatively, you can use fcntl to place a read or write lock on the file,
+Alternatively, you can use fcntl to place a read or write lock on the file.
+
+
+
+### Other use of mmap
+
+* replacement of ```read ``` and ```write```, map the file and scan the memory (may run faster)
+* BUild data structure in memory mapped file
+* to map special "/dev/zero" file into memory, if programs needs chunk of zero
