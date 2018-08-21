@@ -252,15 +252,85 @@ close (fd);
 ```
 Reading to FIFO
 ```
-FILE* fifo = fopen (fifo_path, “r”);
-fscanf (fifo, “%s”, buffer);
+FILE* fifo = fopen (fifo_path, "r");
+fscanf (fifo, "%s", buffer);
 fclose (fifo);
 ```
 
 A FIFO can have multiple readers or multiple writers. Bytes from each writer are written atomically up to a maximum size of PIPE_BUF (4KB on Linux). Chunks from simultaneous writers can be interleaved. Similar rules apply to simultaneous reads  
 
+## Sockets
+
+represented by file descriptors
+### System calls
+
+`socket`  Creates a sockect  
+`closes` Destroys a socket  
+`connect` Creates a connection between two sockects
+`bind` Labes a server socket with an address
+`accept` Accepts a connection and creates a new socket for the connection
+
+### Creating and destroying Sockets
+
+```
+socket (
+ namespace {PF_LOCAL, PF_UNIX, PF_INET},
+ communication style {SOCK_STREAM, SOCK_DGRAM},
+ protocol: specify low level mechanisim to transmitt data specifying zero 0 is usually the correct protocol
+) 
+```
+
+```
+connect (
+    file_descriptor,
+   server_soccket,
+   lengh_in_bytes_address_structure
+
+)
+```
 
 
+#### Local sockects
+For connecting local process on the same computer.  
+Represensted by the synonyms `PF_LOCAL` and `PF_LINUX` and their socket address is specified by the filenames.  
+```
+struct socketaddr_un
+{
+	sun_family = AF_LOCAL
+	sun_path = file_name_to_use_max_108_byte_len
+}
+the length of the socketaddr_un should be computed using SUN_LEN macro
+the process must have write and read permission
+The only permissible protocol for the local namespace is 0
+
+Because it resides in a file system, a local socket is listed as a file
+
+``` %ls -l /tmp/socket ```
+
+srwxrwx--x 1 user group 0 Nov 13 19:18 /tmp/socket
+
+the s indicates it is a socket
+
+#### Internet domain Sockets
+
+socket connecting process through the internet uses the namespace PF_INET.  
+Transport control protocol (TCP) provides reliable connection-ordered transport on top the IP protocol.
+
+Because different machines store multibyte values in different byte orders, use `htons` to convert the port number to network byte order
+
+To convert human-readable hostnames, either numbers in standard dot notation (such as 10.0.0.1) or DNS names (such as www.codesourcery.com ) into 32-bit IP numbers, you can use `gethostbyname` .This returns a pointer to the struct hostent structure; the h_addr field contains the host’s IP number.
+
+On GNU/Linux systems, the associations between protocol/service names and standard port numbers are listed in the file /etc/services
+
+Pipes are limited because the file descriptors must be used by related processes and because communication is unidirectional.The `socketpair` function creates two file descriptors for two connected sockets on the same computer.
+
+```
+socketpair (
+	domain must be PF_LOCAL,
+	connection,
+	protocol,
+	two_integer_array_which_is_filled_with_the_file_descriptions_of_the_two_sockets
 
 
-
+)
+```

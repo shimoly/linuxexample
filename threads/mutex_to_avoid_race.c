@@ -71,7 +71,7 @@ int add_job()
     }
     struct job next_avail_job;
     next_job = &next_avail_job;
-    printf("Startting .... %d, %p\n", (int)pthread_self(), job_queue);
+    printf("Starting .... %d, %p\n", (int)pthread_self(), job_queue);
 
 }
 int main(int argc, char const *argv[])
