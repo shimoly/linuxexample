@@ -21,9 +21,11 @@ void reader(FILE *stream)
     char buffer[1024];
     /* Read until we hit the end of the stream. fgets reads until either a newline or the end-of-file. */
     while (
-		    !feof(stream) 
-		    && !ferror(stream) 
-		    && fgets(buffer, sizeof(buffer), stream) != NULL)
+        !feof(stream) && 
+        !ferror(stream) && 
+        fgets(buffer, 
+        sizeof(buffer), stream) != NULL
+        )
         fputs(buffer, stdout);
 }
 int main()

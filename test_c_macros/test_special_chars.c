@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-
-
 int traverse_till_first_special_char(char *source)
 {
 	char * begin = source;

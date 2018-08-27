@@ -6,36 +6,42 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <pthread.h>
 /* Read text from the socket and print it out. Continue until the socket closes. Return nonzero if the client sent a "quit" message, zero otherwise. */
-int server(int client_socket)
+void * server(void* _client_socket)
 {
+        int client_socket = *(int *)_client_socket;
+        //printf("Starting socket. %d\n ",  client_socket);
         while (1)
         {
                 int length;
                 char *text;
+                int id = 0;
                 int quit_message = 0;                
                 if (read(client_socket, &length, sizeof(length)) == 0)/* First, read the length of the text message from the socket.read returns zero, the client closed the connection. */
                 {
                         printf("Client closed the socket \n");
-                        return 1;
+                        break;
                 }
-                
-                text = (char *)malloc(length);/* Allocate a buffer to hold the text. */
-                
-                read(client_socket, text, length);/* Read the text itself, and print it. */
-                quit_message = strcmp(text, "quit");
-
-                printf("Received. (%d)\t%s\n", client_socket, text);
-                
-                free(text);/* Free the buffer. */
-                
-                if (quit_message == 0)/* If the client sent the message "quit," we’re all done.*/
+                if(length >0 && length <256)
                 {
-                        printf("Quiting\n");
-                        return 1;
-                }
-                //return 0;
+                        text = (char *)malloc(length);/* Allocate a buffer to hold the text. */                
+                        read(client_socket, text, length);/* Read the text itself, and print it. */
+                        quit_message = strcmp(text, "quit");
+                        id = (int) text[0];
+                        for (int i=48;i<id;++i)
+                                printf("\t");
+                        id = (int) text[1]-48;
+                        printf("%d\n ", id);                
+                        free(text);/* Free the buffer. */                
+                        if (quit_message == 0)/* If the client sent the message "quit," we’re all done.*/
+                        {
+                          printf("Quiting\n");
+                          break;
+                        }     
+                }               
         }
+        close(client_socket);
         return 0;
 }
 int init_server(const char *const socket_name)
@@ -44,7 +50,7 @@ int init_server(const char *const socket_name)
 
         int socket_fd;
         struct sockaddr_un name;
-        int client_sent_quit_message;
+        int client_sent_quit_message = 0;
        
         socket_fd = socket(PF_LOCAL, SOCK_STREAM, 0); /* Create the socket. */
         
@@ -55,6 +61,7 @@ int init_server(const char *const socket_name)
        
         listen(socket_fd, 5); /* Listen for connections. */
         /* Repeatedly accept connections, spinning off one server() to deal with each client. Continue until a client sends a "quit" message.*/
+        int i = 0;
         do
         {
                 struct sockaddr_un client_name;
@@ -64,10 +71,11 @@ int init_server(const char *const socket_name)
                 /* Accept a connection. */
                 client_socket_fd = accept(socket_fd, &client_name, &client_name_len);
                 /* Handle the connection. */
-
-                client_sent_quit_message = server(client_socket_fd);
+                pthread_t thread;
+                pthread_create(&thread, NULL, server, (void *)&client_socket_fd);
+                //client_sent_quit_message = server();
                 /* Close our end of the connection. */
-                close(client_socket_fd);
+                //close(client_socket_fd);
         } while (!client_sent_quit_message);
         /* Remove the socket file.*/
 
@@ -88,9 +96,8 @@ int main(int argc, char *argv[])
         int status = stat(socket_name, &st);
         if (status == 0)
         {
-                /*A file already exits, check if it is a socket
-		 * If yes unlink it
-		 * If no treat it as an error condition*/
+                /*A file already exits, check if it is a socket, If yes unlink it*/
+		 
                 if ((st.st_mode & S_IFMT) == S_IFSOCK)
                 {
                         status = unlink(socket_name);
@@ -100,7 +107,7 @@ int main(int argc, char *argv[])
                                 exit(1);
                         }
                 }
-
+                /*If no treat it as an error condition*/
                 else
                 {
                         fprintf(stderr, "The path exits but it is not a socket\n");

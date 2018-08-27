@@ -59,9 +59,7 @@ void * thread_function(void *args)
 		 * indicating the queue is not empty, decrement the count by 1.
 		 * If the queue is empty, block until a new job is enqueued*/
 
-		sem_wait(&job_queue_count);
-
-		/*Lock the mutex on the job queue*/
+		sem_wait(&job_queue_count);	/*Lock the mutex on the job queue*/
 
 		pthread_mutex_lock(&job_queue_mutex);
 
