@@ -181,9 +181,30 @@ setitimer (
 
 struct itimerval 
 {
-
+    it_value is a struct timeval field that contains the time until the time next expires and a signal is sent. If this is 0 timer is diasabled,  
+    it_interval is another timeval field containing the value to which the timer will be reset after it expires. If this is 0 the timer will be disabled after it expires
 }
 ```
+# Sysinfo: Obtaining System Statistics
+The sysinfo system call fills a structure `sysinfo` with system statistics.   
+Some of the intersting fields are
+```
+sysinfo (
+    uptime, //Time elapsed since the system booted, in seconds
+    totalram, //Total available physical RAM
+    freeram, //Free physical RAM
+    procs //Number of processes on the system
+)
+```
+# uname
+Fills structure with various system information, including thecomputer’s network name and domain name, and the operating system
+```
+#include <sys/utsname.h>
 
+struct utsname u;
+uname (&u);
+printf ("%s release %s (version %s) on %s\n", u.sysname, u.release,
+u.version, u.machine);
+```
 
 
