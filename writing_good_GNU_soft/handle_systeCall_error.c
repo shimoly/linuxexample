@@ -22,7 +22,7 @@ int chown_with_full_error_codes(char * path, uid_t user_id)
 	{
 	 case EPERM:		/* Permission denied. */
 	 case EROFS:		/* PATH is on a read-only file system. */
-	 case ENAMETOOLONG: 	/* PATH is too long. */
+	 case ENAMETOOLONG: /* PATH is too long. */
 	 case ENOENT:		/* PATH does not exit. */
 	 case ENOTDIR:		/* A component of PATH is not a directory. */
 	 case EACCES:		/* A component of PATH is not accessible. */
